@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import CourseCard from './CourseCard';
 import { mockCourses, Course } from './CourseData';
+import Navbar from '../Navbar';
+import Footer from '../Footer';
 
 const CourseList = () => {
   const [sourceFilters, setSourceFilters] = useState({
@@ -74,10 +76,9 @@ const CourseList = () => {
   });
 
   return (
+    <>
+        <Navbar />
     <div className="max-w-6xl mx-auto p-6">
-    <h1 className="text-3xl sm:text-4xl font-extrabold text-center text-gray-800 mb-8">
-    CourseLink List
-    </h1>
       <input
         type="text"
         placeholder="Search courses..."
@@ -193,6 +194,8 @@ const CourseList = () => {
         )}
       </div>
     </div>
+    <Footer />
+    </>
   );
 };
 
