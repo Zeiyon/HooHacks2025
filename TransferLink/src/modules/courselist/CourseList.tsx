@@ -75,7 +75,9 @@ const CourseList = () => {
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-        <h1 className='flex '>CourseLink</h1>
+    <h1 className="text-3xl sm:text-4xl font-extrabold text-center text-gray-800 mb-8">
+    CourseLink List
+    </h1>
       <input
         type="text"
         placeholder="Search courses..."
@@ -86,22 +88,22 @@ const CourseList = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <div>
-          <h3 className="font-semibold mb-2">Source Course Filters</h3>
+          <h3 className="font-semibold mb-2">Current</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <input
-              type="text"
-              name="courseNumber"
-              placeholder="Course Number"
-              className="p-2 border border-gray-300 rounded-md"
-              value={sourceFilters.courseNumber}
-              onChange={handleSourceFilterChange}
-            />
             <input
               type="text"
               name="mnemonic"
               placeholder="Mnemonic"
               className="p-2 border border-gray-300 rounded-md"
               value={sourceFilters.mnemonic}
+              onChange={handleSourceFilterChange}
+            />
+            <input
+              type="text"
+              name="courseNumber"
+              placeholder="Course Number"
+              className="p-2 border border-gray-300 rounded-md"
+              value={sourceFilters.courseNumber}
               onChange={handleSourceFilterChange}
             />
             <select
@@ -134,22 +136,22 @@ const CourseList = () => {
         </div>
 
         <div>
-          <h3 className="font-semibold mb-2">Destination Course Filters</h3>
+          <h3 className="font-semibold mb-2">Transfer</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <input
-              type="text"
-              name="courseNumber"
-              placeholder="Course Number"
-              className="p-2 border border-gray-300 rounded-md"
-              value={destinationFilters.courseNumber}
-              onChange={handleDestinationFilterChange}
-            />
             <input
               type="text"
               name="mnemonic"
               placeholder="Mnemonic"
               className="p-2 border border-gray-300 rounded-md"
               value={destinationFilters.mnemonic}
+              onChange={handleDestinationFilterChange}
+            />
+            <input
+              type="text"
+              name="courseNumber"
+              placeholder="Course Number"
+              className="p-2 border border-gray-300 rounded-md"
+              value={destinationFilters.courseNumber}
               onChange={handleDestinationFilterChange}
             />
             <select
