@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Navbar = () => {
@@ -6,14 +5,12 @@ const Navbar = () => {
     <nav className="bg-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          {/* Logo */}
           <div className="flex-shrink-0">
             <Link to="/" className="text-xl font-bold text-blue-600">
               CourseLink
             </Link>
           </div>
 
-          {/* Center Links */}
           <div className="hidden md:flex space-x-8">
             <Link to="/" className="text-gray-700 hover:text-blue-600 font-medium">
               Home
@@ -29,7 +26,6 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Right-side Auth Buttons */}
           <div className="flex items-center space-x-4">
             <Link to="/signin" className="text-gray-700 hover:text-blue-600 font-medium">
               Sign In
