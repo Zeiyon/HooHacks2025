@@ -1,11 +1,10 @@
 import CourseList from './modules/courselist/CourseList'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// import Navbar from './modules/Navbar'
 import Homepage from './modules/homepage/Homepage';
 import Register from './modules/Register';
 import Login from './modules/Login';
+import Scheduler from './modules/scheduler/Scheduler';
 import Profile from './modules/Profile';
-
 
 function App() {
 
@@ -32,6 +31,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Homepage />} />
       <Route path="/courses" element={<CourseList />} />
+      <Route path="/scheduler" element={<Scheduler />} />
       <Route path="/signin" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/profile" element ={<Profile profile = {userProfile} />} />
