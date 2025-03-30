@@ -76,8 +76,10 @@ const CourseList = () => {
   });
 
   return (
-    <>
+    <div className='bg-gray-50'>
         <Navbar />
+
+        <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center pt-10">Courses List</h1>
     <div className="max-w-6xl mx-auto p-6">
       <input
         type="text"
@@ -195,7 +197,7 @@ const CourseList = () => {
       </div>
     </div>
     <Footer />
-    </>
+    </div>
   );
 };
 
