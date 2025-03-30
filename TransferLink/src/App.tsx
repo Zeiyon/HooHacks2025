@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Homepage from './modules/homepage/Homepage';
 import Register from './modules/Register';
 import Login from './modules/Login';
+import Courses from './modules/courselist/Courses';
 
 function App() {
 
@@ -14,6 +15,7 @@ function App() {
       <Route path="/courses" element={<CourseList />} />
       <Route path="/signin" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/realcourses" element={<Courses />} />
     </Routes>
     </Router>
   )
