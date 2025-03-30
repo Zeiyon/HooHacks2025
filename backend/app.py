@@ -25,6 +25,7 @@ class Course(db.Model):
         return f'<Course {self.course_number} - {self.course_name}>'
 
 # Ensure tables are created
+
 with app.app_context():
     db.create_all()
 
