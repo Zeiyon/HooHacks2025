@@ -6,6 +6,7 @@ import Login from './modules/Login';
 import Courses from './modules/courselist/Courses';
 import Scheduler from './modules/scheduler/Scheduler';
 import Profile from './modules/Profile';
+import Chatbot from "./modules/scheduler/Chatbot";
 
 
 function App() {

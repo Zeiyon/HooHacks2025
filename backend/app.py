@@ -1,6 +1,11 @@
 from flask import Flask, jsonify, request, render_template, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+import google.generativeai as genai
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for frontend-backend communication
@@ -67,6 +72,17 @@ def delete_course(id):
         db.session.commit()
         return jsonify({"message": "Course deleted"}), 200
     return jsonify({"error": "Course not found"}), 404
+
+genai.configure(api_key=os.environ.get('API_KEY'))
+@app.route("/generate", methods=["POST"])
+def generate_response():
+    data = request.get_json()
+    user_text = data.get("text")
+
+    model = genai.GenerativeModel("gemini-2.0-flash")
+    response = model.generate_content(user_text)
+
+    return jsonify({"response": response.text})
 
 # Dummy page to view courses added to DB
 @app.route('/')
