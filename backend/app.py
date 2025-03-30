@@ -1,13 +1,15 @@
-from flask import Flask, jsonify, request, render_template, redirect, session
+from flask import Flask, jsonify, request, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for frontend-backend communication
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///courses.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your_secret_key'  # For session management
+
+# Enable CORS with credentials
+CORS(app, supports_credentials=True)
 
 db = SQLAlchemy(app)
 
@@ -20,17 +22,6 @@ class User(db.Model):
 
     def to_dict(self):
         return {"id": self.id, "email": self.email, "name": self.name}
-
-# Define Course model
-class Course(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    course_number = db.Column(db.String(10), nullable=False, unique=True)
-    course_id = db.Column(db.String(10), nullable=False)
-    course_name = db.Column(db.String(100), nullable=False)
-    group_id = db.Column(db.Integer, nullable=True)  # Grouping courses
-
-    def to_dict(self):
-        return {"id": self.id, "course_number": self.course_number, "course_id": self.course_id, "course_name": self.course_name, "group_id": self.group_id}
 
 # Ensure tables are created
 with app.app_context():
@@ -69,6 +60,7 @@ def login():
     if not user or not check_password_hash(user.password_hash, password):
         return jsonify({"error": "Invalid email or password"}), 401
 
+    # Store user ID in session
     session['user_id'] = user.id
     return jsonify({"message": "Login successful", "user": user.to_dict()}), 200
 
@@ -119,19 +111,6 @@ def delete_course(id):
         db.session.commit()
         return jsonify({"message": "Course deleted"}), 200
     return jsonify({"error": "Course not found"}), 404
-
-# Dummy page to view courses
-@app.route('/')
-def index():
-    courses = Course.query.all()
-    grouped_courses = {}
-
-    for course in courses:
-        if course.course_id not in grouped_courses:
-            grouped_courses[course.course_id] = []
-        grouped_courses[course.course_id].append(course)
-
-    return render_template('index.html', grouped_courses=grouped_courses)
 
 if __name__ == "__main__":
     app.run(debug=True)
