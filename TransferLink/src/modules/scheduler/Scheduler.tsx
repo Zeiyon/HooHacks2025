@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Navbar from '../Navbar';
 import ScheduleDisplay from './ScheduleDisplay';
+import Footer from '../Footer';
 import Chatbot from "./Chatbot";
 
 type Semester = {
@@ -96,6 +97,7 @@ const Scheduler = () => {
       <h1 className="text-2xl font-bold mb-4">Scheduler Assistant</h1>
       <Chatbot />
     </div>
+      <Footer />
     </>
   );
 };
