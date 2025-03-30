@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Navbar from '../Navbar';
 import ScheduleDisplay from './ScheduleDisplay';
+import Footer from '../Footer';
 
 type Semester = {
   name: string;
@@ -91,6 +92,7 @@ const Scheduler = () => {
           />
         </div>
       </div>
+      <Footer />
     </>
   );
 };
