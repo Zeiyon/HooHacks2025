@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify
 from flask_sqlalchemy import SQLAlchemy
+import google.generativeai as genai
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///courses.db'
@@ -64,5 +65,19 @@ def delete_course(id):
         db.session.commit()
     return redirect('/')
 
+genai.configure(api_key="AIzaSyCaj_jmHZrGQr4_Cpw-tegUtuTshlstENw")
+@app.route("/generate", methods=["POST"])
+def generate_response():
+    data = request.get_json()
+    user_text = data.get("text")
+
+    # Call Gemini AI
+    model = genai.GenerativeModel("gemini-pro")
+    response = model.generate_content(user_text)
+
+    return jsonify({"response": response.text})
+
+if __name__ == "__main__":
+    app.run(debug=True)
 if __name__ == "__main__":
     app.run(debug=True)
