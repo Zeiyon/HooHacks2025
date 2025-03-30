@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
@@ -29,29 +29,36 @@ class Course(db.Model):
 with app.app_context():
     db.create_all()
 
-@app.route('/courses', methods=['GET'])
+@app.route('/api/courses', methods=['GET'])
 def get_courses():
     courses = Course.query.all()
     return jsonify([course.to_dict() for course in courses])
 
-@app.route('/courses', methods=['POST'])
+@app.route('/add', methods=['POST'])
 def add_course():
-    data = request.json
-    if not all(key in data for key in ["course_number", "course_id", "course_name"]):
-        return jsonify({"error": "Missing data"}), 400
+    course_number = request.form['course_number']
+    course_id = request.form['course_id']
+    course_name = request.form['course_name']
 
-    existing_course = Course.query.filter_by(course_id=data["course_id"]).first()
-    group_id = existing_course.id if existing_course else None  # Link to first entry
+
+    existing_course = Course.query.filter_by(course_id=course_id).first()
+    
+    if existing_course:
+        group_id = existing_course.id # Link to the first course with this id
+    else:
+        group_id = None # First entry of this course_id
 
     new_course = Course(
-        course_number=data["course_number"],
-        course_id=data["course_id"],
-        course_name=data["course_name"],
+        course_number=course_number,
+        course_id=course_id,
+        course_name=course_name,
         group_id=group_id
     )
+
     db.session.add(new_course)
     db.session.commit()
-    return jsonify(new_course.to_dict()), 201
+
+    return redirect('/')
 
 @app.route('/courses/<int:id>', methods=['DELETE'])
 def delete_course(id):
@@ -62,9 +69,19 @@ def delete_course(id):
         return jsonify({"message": "Course deleted"}), 200
     return jsonify({"error": "Course not found"}), 404
 
+# Dummy page to view courses added to DB
 @app.route('/')
-def home():
-    return jsonify({"message": "Flask API is running!"}), 200
+def index():
+    courses = Course.query.all()
+    grouped_courses = {}
+    
+    # Group courses by course_id
+    for course in courses:
+        if course.course_id not in grouped_courses:
+            grouped_courses[course.course_id] = []
+        grouped_courses[course.course_id].append(course)
+
+    return render_template('index.html', grouped_courses=grouped_courses)
 
 if __name__ == "__main__":
     app.run(debug=True)
