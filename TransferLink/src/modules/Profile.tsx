@@ -7,6 +7,7 @@ import Footer from './Footer';
 export interface Profile {
   id: number;
   user: string;
+  password: string;
   completedClasses: string[];
   currentUniversity: string;
   major: string;
