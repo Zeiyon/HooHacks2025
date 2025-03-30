@@ -1,7 +1,10 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for frontend-backend communication
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///courses.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -15,54 +18,52 @@ class Course(db.Model):
     course_name = db.Column(db.String(100), nullable=False)
     group_id = db.Column(db.Integer, nullable=True)  # Removed ForeignKey
 
+    def to_dict(self):
+        return {"id": self.id, "course_number": self.course_number, "course_id": self.course_id, "course_name": self.course_name, "group_id": self.group_id}
+
     def __repr__(self):
         return f'<Course {self.course_number} - {self.course_name}>'
 
 # Ensure tables are created
 with app.app_context():
-    db.drop_all()  # Drop existing database (WARNING: This deletes all data!)
     db.create_all()
 
-@app.route('/')
-def index():
+@app.route('/courses', methods=['GET'])
+def get_courses():
     courses = Course.query.all()
-    grouped_courses = {}
+    return jsonify([course.to_dict() for course in courses])
 
-    # Group courses by course_id
-    for course in courses:
-        if course.course_id not in grouped_courses:
-            grouped_courses[course.course_id] = []
-        grouped_courses[course.course_id].append(course)
-
-    return render_template('index.html', grouped_courses=grouped_courses)
-
-@app.route('/add', methods=['POST'])
+@app.route('/courses', methods=['POST'])
 def add_course():
-    course_number = request.form['course_number']
-    course_id = request.form['course_id']
-    course_name = request.form['course_name']
+    data = request.json
+    if not all(key in data for key in ["course_number", "course_id", "course_name"]):
+        return jsonify({"error": "Missing data"}), 400
 
-    # Check if there's already a course with the same course_id
-    existing_course = Course.query.filter_by(course_id=course_id).first()
+    existing_course = Course.query.filter_by(course_id=data["course_id"]).first()
+    group_id = existing_course.id if existing_course else None  # Link to first entry
 
-    if existing_course:
-        group_id = existing_course.id  # Link to the first course with this ID
-    else:
-        group_id = None  # First entry of this course_id
-
-    new_course = Course(course_number=course_number, course_id=course_id, course_name=course_name, group_id=group_id)
+    new_course = Course(
+        course_number=data["course_number"],
+        course_id=data["course_id"],
+        course_name=data["course_name"],
+        group_id=group_id
+    )
     db.session.add(new_course)
     db.session.commit()
+    return jsonify(new_course.to_dict()), 201
 
-    return redirect('/')
-
-@app.route('/delete/<int:id>')
+@app.route('/courses/<int:id>', methods=['DELETE'])
 def delete_course(id):
     course = Course.query.get(id)
     if course:
         db.session.delete(course)
         db.session.commit()
-    return redirect('/')
+        return jsonify({"message": "Course deleted"}), 200
+    return jsonify({"error": "Course not found"}), 404
+
+@app.route('/')
+def home():
+    return jsonify({"message": "Flask API is running!"}), 200
 
 if __name__ == "__main__":
     app.run(debug=True)
